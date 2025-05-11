@@ -1,0 +1,128 @@
+
+<!-- SEEDRIFT :: PROJECT SNAPSHOT -- UPDATED: 2025-05-09 -->
+
+<!-- CORE FILE: index.html (homepage) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEEDRIFT</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #ddd;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .content-dim {
+      filter: brightness(0.8);
+    }
+
+    .content-dim a:hover,
+    .content-dim h1:hover,
+    .content-dim p:hover {
+      filter: brightness(1.2);
+      transition: filter 0.3s ease;
+    }
+
+    h1, p, a {
+      display: block;
+      
+      transition: transform 0.9s ease-in-out;
+    }
+
+    a {
+      color: #4fc3f7;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .circle {
+      position: fixed;
+      bottom: -50px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.11);
+      pointer-events: none;
+      animation: floatUp linear forwards;
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="content-dim">
+    <h1>SEEDRIFT</h1>
+    <p>signal::echo::construct<br/>— transmission node initialized —<br/><br/>Entrypoint is always <strong>sdrift.net</strong>. VoxMancer and all emission points are subroutines.</p>
+    <div class="links">
+      <a href="/manifest_en.pdf" target="_blank">Manifest: PRINT.2 / SEEDRIFT EXTENSION</a>
+      <a href="https://artifact-2505-en.vercel.app" target="_blank">2505.print.2</a>
+      <a href="#" onclick="return false;" target="_blank">VoxMancer Interface (Pending)</a>
+      <a href="#" onclick="return false;" style="opacity:0.5; cursor:default;">CONDUKTOR NODE (Coming Soon)</a>
+    </div>
+  </div>
+
+<script>
+  // Floating Circles
+  function spawnCircle() {
+    const circle = document.createElement("div");
+    circle.classList.add("circle");
+
+    const size = Math.random() * 15 + 10;
+    circle.style.width = `${size}px`;
+    circle.style.height = `${size}px`;
+
+    const left = Math.random() * window.innerWidth;
+    const duration = Math.random() * 5 + 5;
+
+    circle.style.left = `${left}px`;
+    circle.style.animationDuration = `${duration}s`;
+
+    document.body.appendChild(circle);
+
+    setTimeout(() => {
+      circle.remove();
+    }, duration * 1000);
+  }
+  setInterval(spawnCircle, 2000);
+
+  // Horizontal Drift on Mouse Move
+  document.addEventListener('mousemove', () => {
+    const elements = document.querySelectorAll('h1, p, a');
+    elements.forEach(el => {
+      const drift = (Math.random() - 0.5) * 20; // drift range: -10 to 10px
+      el.style.transform = `translateX(${drift}px)`;
+    });
+    setTimeout(() => {
+      elements.forEach(el => {
+        el.style.transform = `translateX(0px)`;
+      });
+    }, 900);
+  });
+</script>
+
+</body>
+</html>

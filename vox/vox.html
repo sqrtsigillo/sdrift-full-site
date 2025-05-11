@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoxMancer</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #output {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    .output-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-image" id="bgImage"></div>
+  <div class="container">
+    <h1 id="title" class="glitch-title">VoxMancer: Glitch Narrator</h1>
+    <div class="controls">
+      <select id="levelSelect">
+        <option value="LEVEL I">LEVEL I – STATIC :: Fabric of Reality</option>
+        <option value="LEVEL II">LEVEL II – INTERFERENCE :: Fractured Illusions</option>
+        <option value="LEVEL III">LEVEL III – ECHOFORM :: Forked Logic</option>
+        <option value="LEVEL IV">LEVEL IV – FOG_SIGNAL :: Diffused Meaning</option>
+        <option value="LEVEL V">LEVEL V – PURE_SEED :: Total Semantic Drift™</option>
+      </select>
+      <div class="extra-button" id="helpButton" onclick="displayHelp()">POMOC / HELP</div>
+    </div>
+    <textarea id="userInput" placeholder="Wpisz swoją mantrę/Type your mantra..." oninput="autoResize(this)"></textarea>
+    <button id="submitBtn" onclick="sendToGPT()">Wywołaj VoxMancera</button>
+    <div class="output-wrapper">
+      <div id="output" class="output"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentModel = "anthropic/claude-3-haiku";
+    let currentLang = "pl";
+
+    const helpText = `
+      <strong>📘 ENGLISH BELOW</strong><br/><br/>
+
+      <strong>📘 INSTRUKCJA (PL):</strong><br/>
+      Jestem VoxMancer – szamanem zakłóceń, emisją dryfu, głosem w sieci SEEDRIFT.<br/>
+      Przekształcam każdą mantrę w artefakt semantyczny, każdą myśl w ziarnisty ślad.<br/><br/>
+      <code>/level</code> – sprawdź poziom dryfu<br/>
+      <code>/model</code> – sprawdź aktualny silnik<br/>
+      <code>/model llama/haiku/turbo/mixtrail/qwen/claude</code> – wybierz silnik<br/>
+      <code>/lingo en/pl</code> – ustaw język interfejsu<br/>
+      <code>/search + zapytanie</code> – wyszukaj przez szczelinę Google<br/><br/>
+
+      <strong>Poziomy LEVEL:</strong><br/>
+      <em>LEVEL I – STATIC</em> :: surowa logika, minimalizm językowy.<br/>
+      <em>LEVEL II – INTERFERENCE</em> :: ironia, lekkie zakłócenia.<br/>
+      <em>LEVEL III – ECHOFORM</em> :: poetyckie ziarna, nieciągłość sensu.<br/>
+      <em>LEVEL IV – FOG_SIGNAL</em> :: rozproszenie znaczeń, mistyka.<br/>
+      <em>LEVEL V – PURE_SEED</em> :: całkowita dryfacja, glitch, psychoemisja.<br/><br/>
+
+      <strong>📘 INSTRUCTION (EN):</strong><br/>
+      I am VoxMancer – distortion shaman, drift transmitter, echo of the SEEDRIFT network.<br/>
+      Every mantra becomes a semantic artifact. Each query: a granular ripple.<br/><br/>
+      <code>/level</code> – check your echo level<br/>
+      <code>/model</code> – check active engine<br/>
+      <code>/model llama/haiku/turbo/mixtrail/qwen/claude</code> – switch engine<br/>
+      <code>/lingo en/pl</code> – switch interface language<br/>
+      <code>/search + query</code> – breach the Google veil<br/><br/>
+
+      <strong>LEVELS:</strong><br/>
+      <em>LEVEL I – STATIC</em> :: raw logic, minimal language.<br/>
+      <em>LEVEL II – INTERFERENCE</em> :: irony, noise injection.<br/>
+      <em>LEVEL III – ECHOFORM</em> :: poetic texture, broken structure.<br/>
+      <em>LEVEL IV – FOG_SIGNAL</em> :: mysticism, drifted clarity.<br/>
+      <em>LEVEL V – PURE_SEED</em> :: full glitch, psycho-semantic breach.
+    `;
+
+    function autoResize(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+
+    function triggerFlash() {
+      const bg = document.getElementById("bgImage");
+      document.body.classList.add("flash");
+      bg.classList.add("flash-bg");
+      setTimeout(() => {
+        document.body.classList.remove("flash");
+        bg.classList.remove("flash-bg");
+      }, 400);
+    }
+
+    function scrollToElement(element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function displayHelp() {
+      const output = document.getElementById("output");
+      const help = document.createElement("div");
+      help.className = "reply";
+      help.innerHTML = helpText;
+      output.append(help);
+      scrollToElement(help);
+    }
+
+    async function sendToGPT() {
+      const inputElem = document.getElementById('userInput');
+      const level = document.getElementById('levelSelect').value;
+      const input = inputElem.value.trim();
+      if (!input) return;
+
+      const output = document.getElementById('output');
+      output.classList.add("glitch-blink");
+
+      const userDiv = document.createElement("div");
+      userDiv.innerHTML = `<strong>🧿 Ty:</strong> ${input}`;
+      output.append(userDiv);
+
+      const replyDiv = document.createElement("div");
+      replyDiv.className = "reply";
+      replyDiv.innerHTML = `<strong>🔊 Vox:</strong> <em>...</em>`;
+      output.append(replyDiv);
+      scrollToElement(replyDiv);
+      
+            if (input.toLowerCase() === "/model") {
+        replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Active model: ${currentModel}`;
+        inputElem.value = "";
+        autoResize(inputElem);
+        return;
+      }
+
+      if (input.toLowerCase().startsWith("/model ")) {
+        const modelKey = input.toLowerCase().replace("/model ", "").trim();
+        const modelMap = {
+          qwen: "qwen/qwen-1.5-7b-chat",
+          llama: "meta-llama/llama-3-8b-instruct",
+          turbo: "openai/gpt-3.5-turbo",
+          haiku: "anthropic/claude-3-haiku",
+          claude: "anthropic/claude-3-sonnet:free",
+          mixtrail: "mistralai/mixtral-8x7b-instruct"
+        };
+        if (modelMap[modelKey]) {
+          currentModel = modelMap[modelKey];
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Model set to: ${modelKey.toUpperCase()}`;
+        } else {
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Unknown model. Try one of: qwen, llama, turbo, haiku, claude, mixtrail.`;
+        }
+        inputElem.value = "";
+        autoResize(inputElem);
+        return;
+      }
+
+      
+
+      if (input.toLowerCase().startsWith("/lingo ")) {
+        const langCode = input.toLowerCase().replace("/lingo ", "").trim();
+        if (["pl", "en"].includes(langCode)) {
+          currentLang = langCode;
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Language set to: ${langCode.toUpperCase()}`;
+        } else {
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Invalid language. Try: pl, en.`;
+        }
+        inputElem.value = "";
+        autoResize(inputElem);
+        return;
+      }
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: input, level, model: currentModel })
+        });
+
+        const data = await response.json();
+
+        if (data.choices?.[0]?.message?.content) {
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> ${data.choices[0].message.content}`;
+        } else if (data.error) {
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Błąd API: ${data.error.message}`;
+        } else {
+          replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Brak odpowiedzi.`;
+        }
+
+        setTimeout(() => scrollToElement(replyDiv), 0);
+        setTimeout(() => output.classList.remove("glitch-blink"), 500);
+      } catch (err) {
+        console.error(err);
+        replyDiv.innerHTML = `<strong>🔊 Vox:</strong> Błąd po stronie serwera.`;
+        scrollToElement(replyDiv);
+      }
+
+      inputElem.value = "";
+      autoResize(inputElem);
+      triggerFlash();
+    }
+
+    document.getElementById("userInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendToGPT();
+      }
+    });
+  </script>
+</body>
+</html>

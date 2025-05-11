@@ -1,0 +1,130 @@
+@keyframes glitchText {
+  0% { text-shadow: 2px 0 red; }
+  20% { text-shadow: -2px 0 blue; }
+  40% { text-shadow: 2px 2px green; }
+  60% { text-shadow: -1px -1px purple; }
+  80% { text-shadow: 1px 1px white; }
+  100% { text-shadow: 0 0 transparent; }
+}
+
+@keyframes blinkGlitch {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; text-shadow: 0 0 5px white; }
+}
+
+@keyframes backgroundFlash {
+  0% { background-color: #0f0f0f; }
+  50% { background-color: black; }
+  100% { background-color: #0f0f0f; }
+}
+
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: #ddd;
+  font-family: 'Courier New', Courier, monospace;
+  transition: background-color 0.3s;
+}
+
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url("https://cdn.glitch.global/dadae2c2-517b-4d3a-ad5b-d780f642a7b9/tlo4.png?v=1746303095828") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1;
+  transition: opacity 0.4s;
+  opacity: 1;
+}
+
+.flash {
+  animation: backgroundFlash 0.4s ease-in-out;
+}
+
+.flash-bg {
+  opacity: 0.2 !important;
+}
+
+.container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+.glitch-title {
+  text-align: center;
+  color: #aaffee;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  animation: glitchText 1.5s infinite;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+select, .extra-button {
+  width: 50%;
+  background: #1a1a1a;
+  color: #aaffcc;
+  border: 1px solid #555;
+  padding: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  background: #1a1a1a;
+  color: #aaffcc;
+  border: 1px solid #555;
+  padding: 10px;
+  resize: none;
+  font-size: 1rem;
+  animation: glitchText 2s infinite alternate;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 10px;
+  width: 100%;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  animation: glitchText 3s infinite alternate;
+}
+
+.output {
+  margin-top: 20px;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background: #1a1a1a;
+  padding: 15px;
+  border: 1px solid #333;
+  color: #d1ffe8;
+  max-height: 300px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.output div.reply {
+  color: #ffe599;
+}
+
+.output.glitch-blink {
+  animation: blinkGlitch 0.4s ease-in-out;
+}
