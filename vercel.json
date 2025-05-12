@@ -1,5 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "vox.sdrift.net"
+        }
+      ],
+      "destination": "/vox.html",
+      "permanent": true
+    }
   ]
 }
